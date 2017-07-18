@@ -20,14 +20,22 @@ class Admin extends Common{
             };
             return ;
         }
+        $authGroupres = db('auth_group')->select();
+        $this->assign('authGroupres',$authGroupres);
         return view();
     }
 
     public function edit($id){
         $res = AdminModel::find($id);
+        $authGroupres = db('auth_group')->select();
+
         if(request()->isPost())
         {
-            $data = input('post.');
+            $data['name'] = input('name');
+            $data['password'] = input('password');
+            $datas['id'] = input('password');
+            $datas['group_id'] = input('password');
+            dump($data);die;
             if(!$data['password'])
             {
                 $data['password'] =$res['password'];
@@ -47,7 +55,11 @@ class Admin extends Common{
         {
             $this->error('管理员不存在',url('lst'));
         }
-        $this->assign('res',$res);
+        $this->assign(
+            array(
+                'res'=>$res,
+                'authGroupres'=>$authGroupres,
+            ));
         return view();
     }
 
@@ -61,6 +73,11 @@ class Admin extends Common{
         }else{
             $this->error('删除失败');
         }
+    }
+
+    public function logout(){
+        session(null);
+        $this->success('退出系统成功！',url('login/login'));
     }
 
 
